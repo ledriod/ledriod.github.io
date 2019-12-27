@@ -1,0 +1,9 @@
+[ko]
+  title = "LedRiod"
+  languageName = "한국어"
+  weight = 1
+  
+[en]
+  title = "Zzossig's Blog"
+  languageName = "English"
+  weight = 2
