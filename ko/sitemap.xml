@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>/ko/</loc>
+    <lastmod>2019-12-24T10:27:56+09:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="/ko/"
+                />
+  </url>
+  
+  <url>
+    <loc>/ko/categories/</loc>
+    <lastmod>2019-12-24T10:27:56+09:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/categories/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="/ko/categories/"
+                />
+  </url>
+  
+  <url>
+    <loc>/ko/tags/programming/</loc>
+    <lastmod>2019-12-24T10:27:56+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/posts/javascript/what_is_the_point_of_refresh_token/</loc>
+    <lastmod>2019-12-24T10:27:56+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/series/</loc>
+    <lastmod>2019-12-24T10:27:56+09:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/series/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="/ko/series/"
+                />
+  </url>
+  
+  <url>
+    <loc>/ko/tags/</loc>
+    <lastmod>2019-12-24T10:27:56+09:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="/ko/tags/"
+                />
+  </url>
+  
+  <url>
+    <loc>/ko/posts/</loc>
+    <lastmod>2019-12-24T10:27:56+09:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/posts/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="/ko/posts/"
+                />
+  </url>
+  
+  <url>
+    <loc>/ko/posts/javascript/shallow_copy_vs_deep_copy/</loc>
+    <lastmod>2019-12-24T09:54:43+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/posts/javascript/call_by_value_call_by_reference/</loc>
+    <lastmod>2019-12-23T12:13:42+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/tags/javascript/</loc>
+    <lastmod>2019-12-23T12:13:19+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/posts/javascript/js_strict_mode/</loc>
+    <lastmod>2019-12-23T12:13:19+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/notes/</loc>
+    <lastmod>2019-12-23T09:17:04+09:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/notes/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="/ko/notes/"
+                />
+  </url>
+  
+  <url>
+    <loc>/ko/notes/numbers_everyone_should_know/</loc>
+    <lastmod>2019-12-23T09:17:04+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/posts/etc/serialize/</loc>
+    <lastmod>2019-12-20T17:24:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/categories/%EA%B0%9C%EB%85%90/</loc>
+    <lastmod>2019-12-20T17:24:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/tags/docker/</loc>
+    <lastmod>2019-12-20T14:56:31+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/series/docker/</loc>
+    <lastmod>2019-12-20T14:56:31+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/posts/docker/what_is_docker/</loc>
+    <lastmod>2019-12-20T14:56:31+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/categories/%EB%9E%80/</loc>
+    <lastmod>2019-12-20T14:56:31+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/tags/webpack/</loc>
+    <lastmod>2019-12-19T11:51:31+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/series/webpack/</loc>
+    <lastmod>2019-12-19T11:51:31+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/posts/webpack/how_to_webpack_config/</loc>
+    <lastmod>2019-12-19T11:51:31+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/posts/webpack/what_is_webpack/</loc>
+    <lastmod>2019-12-19T09:23:51+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/tags/hugo/</loc>
+    <lastmod>2019-12-13T09:24:21+09:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/tags/hugo/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="/ko/tags/hugo/"
+                />
+  </url>
+  
+  <url>
+    <loc>/ko/series/hugo/</loc>
+    <lastmod>2019-12-13T09:24:21+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/posts/hugo/theme_customizing/</loc>
+    <lastmod>2019-12-13T09:24:21+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/posts/hugo/theme_making_miscellaneous/</loc>
+    <lastmod>2019-12-12T10:18:07+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/posts/hugo/how_to_use_hugo_theme/</loc>
+    <lastmod>2019-12-12T09:16:12+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/posts/hugo/make_a_blog_with_hugo/</loc>
+    <lastmod>2019-12-11T12:13:55+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/about/</loc>
+    <lastmod>2019-12-08T00:00:38+09:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/about/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="/ko/about/"
+                />
+  </url>
+  
+  <url>
+    <loc>/ko/gallery/mine/</loc>
+    <lastmod>2019-12-08T00:00:28+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/ko/gallery/</loc>
+    <lastmod>2019-12-08T00:00:28+09:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/gallery/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="/ko/gallery/"
+                />
+  </url>
+  
+  <url>
+    <loc>/ko/archive/</loc>
+    <lastmod>2019-10-19T11:44:14+09:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/archive/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="/ko/archive/"
+                />
+  </url>
+  
+  <url>
+    <loc>/ko/gallery/photo/</loc>
+    <lastmod>2018-10-12T10:20:16+09:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/gallery/photo/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="/ko/gallery/photo/"
+                />
+  </url>
+  
+  <url>
+    <loc>/ko/gallery/cartoon/</loc>
+    <lastmod>2018-10-11T10:20:16+09:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/gallery/cartoon/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="/ko/gallery/cartoon/"
+                />
+  </url>
+  
+</urlset>

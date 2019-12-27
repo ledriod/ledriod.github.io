@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>webpack on LedRiod</title>
+    <link>/ko/series/webpack/</link>
+    <description>Recent content in webpack on LedRiod</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ko</language>
+    <managingEditor>ledriod@gmail.com (Dmytro Kravets)</managingEditor>
+    <webMaster>ledriod@gmail.com (Dmytro Kravets)</webMaster>
+    <copyright>&amp;copy;{year}, ZZOSSIG All Rights Reserved</copyright>
+    <lastBuildDate>Thu, 19 Dec 2019 11:51:31 +0900</lastBuildDate>
+    
+        <atom:link href="/ko/series/webpack/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+      
+      <item>
+        <title>Webpack 설정파일 들여다 보기</title>
+        <link>/ko/posts/webpack/how_to_webpack_config/</link>
+        <pubDate>Thu, 19 Dec 2019 11:51:31 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/posts/webpack/how_to_webpack_config/</guid>
+        <description>Webpack, 들어는 봤는데&amp;hellip; 사실 리액트 프로젝트를 진행하면서, Webpack을 만질 기회가 많이 없는게 사실입니다. 보통 Create React App(cra)로 프로</description>
+      </item>
+      
+      <item>
+        <title>Webpack이란?</title>
+        <link>/ko/posts/webpack/what_is_webpack/</link>
+        <pubDate>Thu, 19 Dec 2019 09:23:51 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/posts/webpack/what_is_webpack/</guid>
+        <description>Webpack은 왜 필요할까? ☄️말도안되는 거대한 하나의 파일 예전에 한 회사에서 일했을 때, 어떤 자바스크립트 파일을 본 적이 있습니다. 한 6만줄에 육박하는</description>
+      </item>
+      
+    
+  </channel>
+</rss>

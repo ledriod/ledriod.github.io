@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on LedRiod</title>
+    <link>/ko/categories/</link>
+    <description>Recent content in Categories on LedRiod</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ko</language>
+    <managingEditor>ledriod@gmail.com (Dmytro Kravets)</managingEditor>
+    <webMaster>ledriod@gmail.com (Dmytro Kravets)</webMaster>
+    <copyright>&amp;copy;{year}, ZZOSSIG All Rights Reserved</copyright>
+    <lastBuildDate>Tue, 24 Dec 2019 10:27:56 +0900</lastBuildDate>
+    
+        <atom:link href="/ko/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+      
+      <item>
+        <title>개념</title>
+        <link>/ko/categories/%EA%B0%9C%EB%85%90/</link>
+        <pubDate>Fri, 20 Dec 2019 17:24:00 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/categories/%EA%B0%9C%EB%85%90/</guid>
+        <description></description>
+      </item>
+      
+      <item>
+        <title>란?</title>
+        <link>/ko/categories/%EB%9E%80/</link>
+        <pubDate>Fri, 20 Dec 2019 14:56:31 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/categories/%EB%9E%80/</guid>
+        <description></description>
+      </item>
+      
+    
+  </channel>
+</rss>

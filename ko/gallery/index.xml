@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>갤러리 on LedRiod</title>
+    <link>/ko/gallery/</link>
+    <description>Recent content in 갤러리 on LedRiod</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ko</language>
+    <managingEditor>ledriod@gmail.com (Dmytro Kravets)</managingEditor>
+    <webMaster>ledriod@gmail.com (Dmytro Kravets)</webMaster>
+    <copyright>&amp;copy;{year}, ZZOSSIG All Rights Reserved</copyright>
+    <lastBuildDate>Sun, 08 Dec 2019 00:00:28 +0900</lastBuildDate>
+    
+        <atom:link href="/ko/gallery/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+      
+      <item>
+        <title>Fiverr</title>
+        <link>/ko/gallery/mine/</link>
+        <pubDate>Sun, 08 Dec 2019 00:00:28 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/gallery/mine/</guid>
+        <description></description>
+      </item>
+      
+      <item>
+        <title>Photo</title>
+        <link>/ko/gallery/photo/</link>
+        <pubDate>Fri, 12 Oct 2018 10:20:16 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/gallery/photo/</guid>
+        <description></description>
+      </item>
+      
+      <item>
+        <title>Cartoon</title>
+        <link>/ko/gallery/cartoon/</link>
+        <pubDate>Thu, 11 Oct 2018 10:20:16 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/gallery/cartoon/</guid>
+        <description></description>
+      </item>
+      
+    
+  </channel>
+</rss>

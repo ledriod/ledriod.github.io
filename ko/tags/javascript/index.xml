@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>javascript on LedRiod</title>
+    <link>/ko/tags/javascript/</link>
+    <description>Recent content in javascript on LedRiod</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ko</language>
+    <managingEditor>ledriod@gmail.com (Dmytro Kravets)</managingEditor>
+    <webMaster>ledriod@gmail.com (Dmytro Kravets)</webMaster>
+    <copyright>&amp;copy;{year}, ZZOSSIG All Rights Reserved</copyright>
+    <lastBuildDate>Mon, 23 Dec 2019 12:13:19 +0900</lastBuildDate>
+    
+        <atom:link href="/ko/tags/javascript/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+      
+      <item>
+        <title>Javascript strict mode에 대해</title>
+        <link>/ko/posts/javascript/js_strict_mode/</link>
+        <pubDate>Mon, 23 Dec 2019 12:13:19 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/posts/javascript/js_strict_mode/</guid>
+        <description>참고: https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Strict_mode Javascript strict mode 사용하기 Javascript의 strict mode를 사용하려면 자바스크립트 파일 첫줄, 혹은 사용하고 싶은 위치에 &#39;use strict&#39;;라는 stri</description>
+      </item>
+      
+    
+  </channel>
+</rss>

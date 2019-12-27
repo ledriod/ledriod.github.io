@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>docker on LedRiod</title>
+    <link>/ko/tags/docker/</link>
+    <description>Recent content in docker on LedRiod</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ko</language>
+    <managingEditor>ledriod@gmail.com (Dmytro Kravets)</managingEditor>
+    <webMaster>ledriod@gmail.com (Dmytro Kravets)</webMaster>
+    <copyright>&amp;copy;{year}, ZZOSSIG All Rights Reserved</copyright>
+    <lastBuildDate>Fri, 20 Dec 2019 14:56:31 +0900</lastBuildDate>
+    
+        <atom:link href="/ko/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+      
+      <item>
+        <title>Docker란?</title>
+        <link>/ko/posts/docker/what_is_docker/</link>
+        <pubDate>Fri, 20 Dec 2019 14:56:31 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/posts/docker/what_is_docker/</guid>
+        <description>Docker를 이야기 하기 전에 🤔좋은 프로그램이란 뭘까? 여러분은 좋은 프로그램이란 뭐라고 생각하시나요? 가장 기본적으로, 해당 프로그램이 목적에 맞는 역할</description>
+      </item>
+      
+    
+  </channel>
+</rss>

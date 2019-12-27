@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>개념 on LedRiod</title>
+    <link>/ko/categories/%EA%B0%9C%EB%85%90/</link>
+    <description>Recent content in 개념 on LedRiod</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ko</language>
+    <managingEditor>ledriod@gmail.com (Dmytro Kravets)</managingEditor>
+    <webMaster>ledriod@gmail.com (Dmytro Kravets)</webMaster>
+    <copyright>&amp;copy;{year}, ZZOSSIG All Rights Reserved</copyright>
+    <lastBuildDate>Fri, 20 Dec 2019 17:24:00 +0900</lastBuildDate>
+    
+        <atom:link href="/ko/categories/%EA%B0%9C%EB%85%90/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+      
+      <item>
+        <title>Serialization 개념을 알아보자</title>
+        <link>/ko/posts/etc/serialize/</link>
+        <pubDate>Fri, 20 Dec 2019 17:24:00 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/posts/etc/serialize/</guid>
+        <description>Serialization(직렬화) 비유 프로그래밍 세계에서 쓰이는 직렬화, 역직렬화 라는 단어와 뜻 완전히 같지는 않지만, 의미가 일맥상통하는 단어가 여럿</description>
+      </item>
+      
+    
+  </channel>
+</rss>

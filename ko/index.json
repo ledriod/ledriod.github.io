@@ -1,0 +1,316 @@
+[
+{
+	"uri": "/ko/",
+	"title": "",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/ko/categories/",
+	"title": "Categories",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/ko/tags/programming/",
+	"title": "programming",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/ko/posts/javascript/what_is_the_point_of_refresh_token/",
+	"title": "Refresh token은 필요한가?",
+	"tags": ["programming"],
+	"categories": [],
+	"series": [""],
+	"description": "로그인 구현시, 세션유지를 어떻게 할것인가",
+	"content": "로그인 구현 뭘로? 사실 Hugo로 블로그를 만들 기 직전에 Gatsby로 GraphQL도 공부할 겸 블로그를 만들었었다. 코멘트 시스템도 만들고, Admin 페이지까지 만들었는데, 블로그는 Hugo를 사용하는게 훨씬 이득이라는걸 깨닫고, 세상에 공개도 못해보고 폐기해버렸다\u0026hellip; 어쨋든 코멘트 시스템을 만들 때, 로그인을 구현해야 할 필요성을 느껴, 간단하게 로그인 할 수 있는 방법을 찾다가 JSON Web Token(jwt)을 사용해서 로그인을 구현하기로 마음먹었다.\n내가 jwt로 구현한 로직 우선 데이터베이스에 로그인시 사용할 아이디와 비밀번호를 저장했다. 프론트에서 서버로 로그인 요청이 오면, 프론트에서 받은 아이디와 비밀번호를 데이터베이스의 그것과 비교해, 일치하면 토큰을 주고 일치하지 않으면 실패값을 준다. 프론트 쪽에서 jwt 토큰값을 받았다면, 이것을 localStorage에 저장한다. 이제 로그인이 필요한 요청을 프론트에서 서버로 하게되면, 토큰값을 함께 줘서 서버에서 토큰값이 유효한가 판단한다.\nsequenceDiagram participant Front participant Server Front-\u0026gt;\u0026gt;Server: 1. 로그인 요청 Server-\u0026gt;\u0026gt;Front: 2. 성공시 - jwt 토큰 Server-\u0026gt;\u0026gt;Front: 3. 실패시 - 실패 코드 loop 서버 요청 Front-\u0026gt;\u0026gt;Server: Api 요청시 토큰과 함께 Server-\u0026gt;\u0026gt;Front: 토큰 확인 후 데이터 반환 end jwt 토큰 만료 처리하기 문제는 토큰이 만료되는 시점에서 생겼다. 토큰을 refresh 시켜주면 되지만, 왜 토큰을 refresh 시켜줘야 하는건지 의문이 생겼다. 이유도 모른채 토큰을 refresh 시켜줄 수는 없다.\n🔮Refresh token이란? 우선 refresh token의 개념부터 톺아보자. 로그인 요청을 하고 나서, 서버에서 토큰을 프론트로 넘겨줄 때, 토큰을 하나 더 만들어서 넘겨주자.(이전에 토큰 만들었던 방법과 마찬가지로) 하나 더 만든 토큰을 refresh token 이라고 하고 기존에 발행하던 토큰을 access token이라고 해보자. 이름은 중요하지 않다. aws의 cognito에서 이런 이름을 쓰기 때문에 그냥 따라서 쓰겠다.\nrefresh token은 access token이 만료되었을 때, access token을 다시 발행하기 위한 용도로 쓸 것이기 때문에, access token보다 유효기간이 더 길어야 한다. access token은 유효기간이 짧게 하는게 정석이다. 토큰이 언제 만료될지는 그냥 내 마음대로 access token은 1시간, refresh token은 30일로 정해주겠다. 이제 로그인을 하면, access token 1시간짜리와 refresh token 30일짜리를 리턴값으로 받게되었다. 발급받은 access token과 refresh token을 어떻게 쓸지는, 사용하는 사람에 달려있다. 이 둘은 정확하게 만료일자만 다르고, 나머지는 같은 내용을 담고 있다.\n나는 access token을 서버 api를 요청할 때마다 body에 실어 보내고, 서버에서는 이 토큰이 만료가 안됐으면, 유효한 값을 리턴하도록 로직을 구현하겠다. refresh token은 서버 api 요청이 실패했고, 이 실패 사유가 access token의 만료 때문 이라면, 이 refresh token을 사용해 access token을 새로 발급하는 로직을 구현하겠다. 당연히, access 토큰으로 access 토큰을 새로 발급하는 것도 안되고, refresh token으로 api 요청하는것도 안된다. 이것은 서로 다른 토큰이고 내가 그렇게 스왑해서 쓸 수 있게 구현하지 않았다.\n대충 이정도가 refresh token을 사용하게 되었을 때 생각해볼 수 있는 시나리오다.\n🔮Refresh token 필요한가? 세션을 유지한다는 말은, 만료되지 않은 access(혹은 refresh) 토큰값을 프론트에서 가지고 있다는 말이다. 이 토큰이 없으면 로그인이 필요한 서비스를 이용할 수 없다. 그런데, 내가 애초에 가진 의문점은, 왜 access token 만으로 세션 유지가 가능한데, 굳이 refresh token이란 개념이 있냐는 거다. 그냥 처음부터 access token의 만료일자를 1년으로 잡아 놓으면 되지 않겠느냔 말이다. 내가 내린 결론은, refresh token은 필요없다.\n🔮Stackoverflow 검색 신기하게도, 나와 같은 생각을 했던 사람이 이미 stackoverflow에 질문을 올렸고, 좋은 답변들이 많이 달려 있었다. 참고:\n Why Does OAuth v2 Have Both Access and Refresh Tokens? What's the point of refresh token? Why use JWT refresh token    많은 사람들이 주장했던 답변은, access 토큰의 경우 로그가 그대로 노출되는 경우가 많은데, 이 토큰의 유효기간을 너무 길게하면 공격자가 이를 악용할 가능성이 커진다는 것이다(access 토큰의 유효기간이 짧을수록 안전하다는 말인듯.). 극단적으로 access 토큰의 유효기간이 5초라고 하면, 확실히 공격자가 이 토큰을 가지고 뭔가 한다는건 힘든 일일 것이다.\n내 생각 - access 토큰이 노출되는 만큼, refresh 토큰도 노출되어 있으며, 한 단계를 더 거치긴 하지만 공격자 입장에서는 refresh 토큰으로 access 토큰을 얻을 수 있다. 토큰의 유효기간이 1회성 사용 이라면 모를까, 공격자도 사용자 만큼이나 똑같은 조건으로 토큰을 사용할 수 있다.\n  access 토큰을 사용하는 쪽이 아니라, 발급하는 쪽의 입장에서 보자는 주장도 있었다. 만약 access 토큰으로만 세션을 유지하고, 유효기간을 아주 길게 해 놓았다고 해 보자. 그런데 시스템에 문제가 생겨, 일단 모든 세션을 종료시켜야 하는 상황이라고 가정해보자. 만약, access토큰의 유효기간을 아주 길게 해놨다면? 유효한 토큰을 가진 수많은 회원들이 해당 사이트(api)를 이용할 수 있을 것이다. refresh 토큰을 사용하면, access 토큰의 유효기간을 짧게 할 수 있고, 토큰을 관리하는 서버에서 토큰을 재발급 하지 않도록 해서 이 문제를 해결할 수도 있다.\n내 생각 - 유저의 로그인(세션)을 막는 방법은 토큰으로만 가능한게 아니다. 아이디나 이메일로 막을 수도 있다.(그렇게 구현 하기만 하면 된다). 어차피 토큰으로 유저를 블럭 시키거나, 특정인이 발행한 토큰을 무효화 시키려고 할 때, 블랙리스트를 만들거나, 혹은 다른 방식으로 구현해야만한다. 토큰을 사용하면 로직을 구현하는데 특별히 더 쉬운것도 아니다.\n  jwt 방식은 아니지만, 잘 알려진 OAuth2 제공자 중에 refresh 토큰을 사용하지 않는 제공자는 github과 foursquare가 있다.\n"
+},
+{
+	"uri": "/ko/series/",
+	"title": "Series",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/ko/tags/",
+	"title": "Tags",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/ko/posts/",
+	"title": "포스트",
+	"tags": ["index"],
+	"categories": [],
+	"series": [],
+	"description": "Post page",
+	"content": ""
+},
+{
+	"uri": "/ko/posts/javascript/shallow_copy_vs_deep_copy/",
+	"title": "깊은 복사 vs 얕은 복사 in javascript",
+	"tags": ["programming"],
+	"categories": [],
+	"series": [""],
+	"description": "자바스크립트에서 파라미터 없이 slice() 쓰는 이유.",
+	"content": "Intro 기본적으로 자바스크립트에서 깊은 복사, 얕은 복사를 논할 때는 object나 array 같은 reference type을 다룬다는 전제를 깔고 들어간다.\nprimitive type에는 string, boolean, number 등이 있고, 항상 메모리 값을 복사하기 때문에 참조관계를 전혀 신경 쓸 필요가 없다. reference type에 값을 할당할 때, 깊은 복사냐, 얕은 복사냐에 따라 행동이 달라질 수 있기 때문에, 이 내용을 알고 있어야 한다.\nPrimitive type   깊은 복사\n1 2 3 4 5 6  var a = 1; var b = a; b = 2; console.log(a); // 1 console.log(b); // 2     예상한 대로 값이 나온다. string이나 boolean으로 테스트해도 마찬가지 결과가 나온다. 별로 신경쓸게 없고 직관적임.\nReference type   깊은 복사(Object): 참고 - https://stackoverflow.com/questions/122102/what-is-the-most-efficient-way-to-deep-clone-an-object-in-javascript\n1 2  var obj = { a: 1 }; var deepCopiedObj = JSON.parse(JSON.stringify(obj)); // 깊은 복사   객체의 깊은 복사를 하는 가장 쉬운 방법은 위와 같다. 그 외에는 외부 라이브러리를(lodash의 cloneDeep) 사용해야 한다. Native 자바스크립트로 객체를 깊은복사 하면 prototype과 같은 데이터가 손상된다. 따라서 Date, Infinity, RegExps, Maps, Sets\u0026hellip; 등등의 객체를 깊은 복사하려고 하면 데이터 손실이 발생한다. Json 형태의 객체라면 온전히 예상대로 깊은 복사가 될 것이다.\n  얕은 복사(Object): 원본과 복사본에서 객체 안의 객체(reference type)와 객체 안의 원시 타입(primitive type)의 값을 변경해 보면, 객체 안의 reference type은 복사본과 원본이 같은 메모리 주소르 바라보고 있음을 알 수 있다.\n1 2 3 4 5 6 7 8 9 10 11 12 13 14  var obj = { a: { b: 1, }, c: 2, }; var shallowCopiedObj = {...obj}; shallowCopiedObj.a.b = 5; shallowCopiedObj.c = 100; console.log(obj.a.b); // 5 console.log(shallowCopiedObj.a.b); // 5 console.log(obj.c); // 2 console.log(shallowCopiedObj.c); // 100   1 2 3 4 5 6 7 8 9 10  var obj = { a: { b: 1, } }; var shallowCopiedObj = Object.assign({}, obj); shallowCopiedObj.a.b = 5; console.log(obj.a.b); // 5 console.log(shallowCopiedObj.a.b); // 5     깊은 복사(Array): 참고 - https://stackoverflow.com/questions/597588/how-do-you-clone-an-array-of-objects-in-javascript\n1 2  var arr = [{a: 1},{b: 2}]; var deepClonedArray = JSON.parse(JSON.stringify(arr));   Object와 마찬가지로 Json 형태의 데이터를 지닌 Array만 데이터 손실 없이 깊은 복사가 된다. arr과 deepClonedArray는 서로 독립적으로 값을 가질 수 있다.\n  얕은 복사(Array): Object와 마찬가지로 객체 안의 reference type인 object가 원본과 복사본이 같은 메모리를 바라본다.\n1 2 3 4 5 6  var arr = [{a: 1},{b: 2}]; var shallowClonedArray = arr.map((v) =\u0026gt; v); shallowClonedArray[0].a = 100; console.log(arr); // [{a: 100}, ...] console.log(shallowClonedArray); // [{a: 100}, ...]   1 2 3 4 5 6  var arr = [{a: 1},{b: 2}]; var shallowClonedArray = arr.slice(); shallowClonedArray[0].a = 100; console.log(arr); // [{a: 100}, ...] console.log(shallowClonedArray); // [{a: 100}, ...]   1 2 3 4 5 6  var arr = [{a: 1},{b: 2}]; var deepClonedArray = [...arr]; deepClonedArray[0].a = 100; console.log(arr); // [{a: 100}, ...] console.log(deepClonedArray); // [{a: 100}, ...]     "
+},
+{
+	"uri": "/ko/posts/javascript/call_by_value_call_by_reference/",
+	"title": "Call by value 와 Call by reference",
+	"tags": [""],
+	"categories": [],
+	"series": [""],
+	"description": "값에 의한 호출 vs 참조에 의한 호출",
+	"content": "이야기는 메모리로부터\u0026hellip; 다음과 같이 자바스크립트에서 변수를 생성하면, 이 변수는 컴퓨터의 어디에 저장될까요?\n1  var a = 1;   바로 메모리에 저장되겠죠. 메모리는 cpu가 연산을 처리하면서 데이터를 임시적으로 저장하는 공간입니다. 윈도우나 macOS도 부팅을 하고 나면, 메모리에서 해당 OS가 돌게되죠. 메모리는 임시 저장소 이지만, 하드디스크에 데이터를 읽는 것 보다 약 10~12배 정도 빠릅니다. 참고: Numbers everyone should know\n변수의 두 종류 변수를 두가지 종류로 나누면 다음과 같이 나눌 수 있습니다\n 원시 타입(Primitive type) 참조 타입(Reference type)  원시 타입에는 string, boolean, int, float 등이 있겠죠. 참조 타입에는 object나 array가 있겠습니다.\n원시 타입 사실 원시 타입으로 Object나 Array를 표현 할 수 있습니다. 언어를 만들 때, 그렇게 설계하면 되겠죠. 그런데 Javascript 언어 설계자는(그외 다른 언어도 마찬가지) 왜 object나 array를 참조 타입으로 만들었을까요?\n아마, 메모리를 아끼려고 그랬을 거에요. 한번 생각해보세요. 원시 타입의 경우, 원시 타입으로 만들어진 변수를 사용할 때 마다, 그 변수의 복사본이 메모리 어딘가에 복사되겠죠.\n1 2 3 4 5  var a = 1; function myFunc(a) { console.log(a); } myFunc(a);   위의 코드에서 myFunc(a)함수를 호출할 때, 전역 변수 a와, 함수 안의 변수 a는 메모리에 저장되어 있는 위치도 다르고, 코드 내에서도 서로 독립적인 값입니다.\n참조 타입 Object나 Array의 경우, 그 안에 다양한 값들을 넣을 수 있죠. 그 값안에 또다른 Object나 Array를 넣는다면, 무한대로 중복해서 값을 넣을 수도 있겠죠.\n1 2 3 4 5 6 7  var obj = { a: { b: { ... } } }   이 Object나 Array라는 녀석들은 덩치가 커질 가능성이 농후한데, 매번 Object나 Array를 메모리에 복사해서 사용하려면, 메모리가 감당이 안되겠죠? 따라서 참조 타입일 때, 필요한 경우 값을 메모리의 다른 주소에 복사하는 방법 대신, 그 메모리의 주소를 참조하여 값을 꺼내오는 방식으로 메모리 사용량을 줄일 수 있게 됩니다.\n간단한 예 Call by value\n1 2 3 4 5 6 7 8 9 10  var obj = { text: \u0026#34;this is text\u0026#34; } function myFunc(obj) { obj = { text: \u0026#34;another text\u0026#34; } } myFunc(obj); console.log(obj); // this is text   Call by reference\n1 2 3 4 5 6 7 8  var obj = { text: \u0026#34;this is text\u0026#34; } function myFunc(obj) { obj.text: \u0026#34;another text\u0026#34;; } myFunc(obj); console.log(obj); // another text   "
+},
+{
+	"uri": "/ko/tags/javascript/",
+	"title": "javascript",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/ko/posts/javascript/js_strict_mode/",
+	"title": "Javascript strict mode에 대해",
+	"tags": ["javascript", "programming"],
+	"categories": [],
+	"series": [""],
+	"description": "strict mode 쓰는법과 이유",
+	"content": "참고: https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Strict_mode\nJavascript strict mode 사용하기 Javascript의 strict mode를 사용하려면 자바스크립트 파일 첫줄, 혹은 사용하고 싶은 위치에 'use strict';라는 string을 넣어주면 된다.\n1 2 3 4  \u0026#39;use strict\u0026#39;; // application-level strict mode function strict() { \u0026#39;use strict\u0026#39;; // function-level strict mode }   Strict mode를 사용하는 이유 Strict를 써주는 이유는, 잠재적으로 버그가 존재할 수 있는 코드를 강제적으로 허용하지 않겠다는 선언이다. 자바스크립트는 상당히 유연한 언어인데, strict mode를 사용하면 이 유연성이 많이 사라진다. 규모가 작은 프로그램은 디버깅이 어렵지 않기 때문에 굳이 strict mode를 사용하지 않아도 되지만, 규모가 커질수록 프로그램을 디버깅하는게 어려워지고, 사소한 실수 하나를 잡으려고 하루를 꼬박 샐 수도 있기 때문에, strict mode를 써서 유연성을 제약하는게 유용할 수 있다.\n예 - 변수 선언 다음 코드는 자바스크립트에서 허용되는 문법이다. var, let, const가 없어도 변수를 선언할 수 있다.\n1 2 3  myVar = 1; console.log(window.myVar);   다음 코드는 허용되지 않는다\n1 2 3 4  \u0026#39;use strict\u0026#39;; myVar = 1; // Reference Error var undefined = 5; // Type Error, undefined는 예약어임   뭐 이런식이다.\n결론 코드를 더 안전하고 견고하게 짜고싶고, 규모가 큰 프로젝트라면 strict mode를 사용하는게 좋다. 엄격모드와, 느슨한 모드의 차이첨을 모두 암기하고 있을 필요는 없다. 상식선에서, 그리고 쓰다보면 자연스럽게 익히게 될 것으로 보인다.\n"
+},
+{
+	"uri": "/ko/notes/",
+	"title": "노트",
+	"tags": ["index"],
+	"categories": [],
+	"series": [],
+	"description": "Note page",
+	"content": ""
+},
+{
+	"uri": "/ko/notes/numbers_everyone_should_know/",
+	"title": "모두가 알아야 할 숫자",
+	"tags": [""],
+	"categories": [],
+	"series": [""],
+	"description": "데이터 읽기, 쓰기, 전송 속도",
+	"content": "출처: http://brenocon.com/dean_perf.html\n   action ns ms     L1 cache reference 0.5 ns    Branch mispredict 5 ns    L2 cache reference 7 ns    Mutex lock/unlock 100 ns    Main memory reference 100 ns    Compress 1K bytes with Zippy 10,000 ns 0.1 ms   Send 1K bytes over 1 Gbps network 10,000 ns 0.1 ms   Read 1 MB sequentially from memory 250,000 ns 0.25 ms   Round trip within same datacenter 500,000 ns 0.5 ms   Disk seek 10,000,000 ns 10 ms   Read 1 MB sequentially from network 10,000,000 ns 10 ms   Read 1 MB sequentially from disk 30,000,000 ns 30 ms   Send packet CA-\u0026gt;Netherlands-\u0026gt;CA 150,000,000 ns 150 ms    Where\n 1 ns = 10-9 seconds 1 ms = 10-3 seconds  "
+},
+{
+	"uri": "/ko/posts/etc/serialize/",
+	"title": "Serialization 개념을 알아보자",
+	"tags": ["programming"],
+	"categories": [],
+	"series": [""],
+	"description": "Serialization 혹은 직렬화가 뭐지?",
+	"content": "Serialization(직렬화) 비유 프로그래밍 세계에서 쓰이는 직렬화, 역직렬화 라는 단어와 뜻 완전히 같지는 않지만, 의미가 일맥상통하는 단어가 여럿 있는 것 같다.\n 암호화 \u0026lt;-\u0026gt; 복호화 인코딩 \u0026lt;-\u0026gt; 디코딩  암호화 \u0026lt;-\u0026gt; 복호화 여기서 암호화 복호화란, 비밀번호 뭐 이런게 아니라, 어떤 중요한 메시지를 그대로 노출시키지 않고 암호화 해서 그 암호를 해독(복호화)할 수 있는 사람에게만 메시지를 노출시키겠다는 말이다.\n인코딩 \u0026lt;-\u0026gt; 디코딩 동영상 인코딩 등의 의미로 쓰일때는, 해당 동영상을 압축한다는 의미로 쓰일 수 있다. 프로그래밍에서 인코딩은 보통 문자열이 맵핑되는 방식을 이야기 한다. utf-8과 같은 인코딩 방식이 존재하고, 인코딩 방식에 따라 맵핑되는 값이 달라진다. 참고로 utf-8의 0~127번 까지는 ASCII코드와 동일한 값으로 맵핑된다.\n직렬화 \u0026lt;-\u0026gt; 역직렬화 직렬화를 이야기하기위해 암호화, 인코딩 등의 이야기를 했는데, 내 생각엔 이들의 의미가 일맥상통 한다고 생각하기 때문에 언급했다. 암호화, 인코딩이 특정 목적을 달성하기 위해 원래의 값을 다른 값으로 바꿔서 표현하는 것 처럼, 직렬화도 원래의 값을, 다른 값으로 바꾸는 의미를 포함한다.\n직렬화 하는 이유와 방식 Why? 프론트 엔드를 리액트로 만들고, 서버사이드를 자바의 스프링으로 구현한다고 생각해보자. 자바에서 클래스 하나를 만들고 이 클래스를 그대로 리액트 쪽에서 쓰고싶다면? 당연히 안된다. 자바스크립트는 자바라는 언어를 해석하지 못한다. 자바에서는 클래스에 extends, implements등의 키워드로 상속과 인터페이스를 구현하지만, 자바스크립트는 prototype의 개념으로 접근한다. 자바스크립트는 자바의 클래스를 해석할 능력이 없다.\n따라서 서로 다른 언어로 데이터를 주고받으려 할 때는 primitive한, 원시타입의 데이터를 주고받는게 기본이다. 이러한 원시타입에는 숫자(int, float), 문자(string), 불리언(boolean) 등이 있겠다. 원시 타입의 경우, 리액트에서 자바로 데이터를 줘도 자바에서 해석할 수 있고, 그 반대도 가능하다. 특히 문자같은 경우, primitive한 타입이긴 한데, 데이터를 주고받는 대상끼리 인코딩 된 방식을 맞춰야 한다. 보통 국내에서는 문자열을 전송할 때 utf-8타입으로 인코딩한다.\n서로 같은 언어로 프론트와 백엔드를 구현해도, 직렬화가 필요하다. 프론트에서 네트워크를 통해 Object 데이터를 서버로 전송할 때, Object를 통째로 서버로 보낼 수 없다. 자바스크립트에서 Object는 primitive한 타입인 string으로 변환한 후 데이터를 전송하게 된다. node서버에서는 이 string을 다시 Object로 변환하면 된다.\n다만, 네트워크를 통해 오브젝트를 주고받을 때, 자바스크립트에서 prototype까지 전달하진 않는 것 같다. 직렬화 한 후, 역직렬화 하면 직렬화 하기 전의 오브젝트 상태와 완전히 같아지지 않는다는 말이다. 예를들어 moment라는 라이브러리를 사용해 오브젝트를 만들고 이 데이터를 네트워크를 통해 서버로 전달 했을 때, 서버는 이 데이터를 새로 인스턴스화 해야한다.\n주는쪽\n1  const give_date = moment().utc(true).toISOString(),   받는쪽\n1  const receive_date = moment(give_date)   How? 자바스크립트에서 직렬화 하는 방법은 간단하다. JSON.stringify()함수로 직렬화를, JSON.parse()로 역직렬화를 하면 된다. JSON.stringify는 자바스크립트의 오브젝트를 문자열로 바꿔주고 JSON.parse는 문자열을 오브젝트로 만들어 준다.\n"
+},
+{
+	"uri": "/ko/categories/%EA%B0%9C%EB%85%90/",
+	"title": "개념",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/ko/tags/docker/",
+	"title": "docker",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/ko/series/docker/",
+	"title": "docker",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/ko/posts/docker/what_is_docker/",
+	"title": "Docker란?",
+	"tags": ["docker"],
+	"categories": [],
+	"series": ["docker"],
+	"description": "Docker는 뭐고 왜 쓰는가",
+	"content": "Docker를 이야기 하기 전에 🤔좋은 프로그램이란 뭘까? 여러분은 좋은 프로그램이란 뭐라고 생각하시나요? 가장 기본적으로, 해당 프로그램이 목적에 맞는 역할을 잘 수행 한다면 좋은 프로그램이라 할 수 있겠죠. 그러나, 이러한 관점은 프로그램을 사용하는 사람의 입장에 국한되어 있습니다.\n세상에 버그 없는 프로그램은 없다고 말하곤 하죠. 프로그램을 만들고 유지, 보수하는 개발자의 입장에선 프로그램이 목적에 맞게 역할을 수행하는 것은 당연한 것이고, 그 프로그램을 잘 관리하는게 중요해 보입니다. 한번 생각해보세요. 프로그래밍과 관련된 일 중에서, 새로 시작하는 프로젝트와, 이미 진행된 프로젝트를 유지, 보수하는 비율이 어느정도 될까요? 아마 프로젝트를 유지, 보수하는데 훨~~씬 더 많은 시간과 노력이 들지 않을까요? 뭐 당연한 소리죠.\n🐋유지, 보수를 잘하려면? 좋은 프로그램란 유지, 보수를 잘 할 수 있는 프로그램이 라는건 어느정도 명백해 보입니다. 그렇다면 어떻게? 라는 질문을 할 수 있겠죠. 어떤 프로그램이 유지, 보수 하기 좋을까요?\n사실 이 주제에 대한 좋은 책도 많이 있고, 사람마다 자신만의 철학이 있기 마련이죠. 이 포스트는 이 주제에 대한게 아니기 때문에, 일일이 저의 철학을 나열하지는 않겠습니다. 도커와 관련된 딱 하나만, 모듈이라는 개념만 살펴보죠.\n모듈? 🐋모듈의 개념 프로그래밍 세계에서 모듈이이라는 단어가 딱 떨어지는 뭐다 라고 말하기엔 좀 애매한 추상적인 성질이 있는것 같습니다. 저는 모듈이란, 모듈을 조립해서 프로그램을 만드는것 이라고 이해하고 있습니다.\n이해하기 쉽게 비유를 들어보죠. 컴퓨터를 조립하려면 부품이 있어야겠죠? 대충 CPU, 램, SSD, 그래픽카드, 마더보드, 주변기기로 모니터, 마우스 등등이 있겠죠. 이런 컴퓨터 부품을 조립하면 컴퓨터를 사용할 수 있게 되죠? 여기서 컴퓨터가 프로그램 이라면, 컴퓨터 부품은 모듈이라고 볼 수 있겠군요.\n🐋모듈과 유지, 보수의 관계 어떤 프로그램이 여러 모듈을 조립해서 만든 것이라면 그 프로그램을 유지, 보수하는게 쉬워집니다. (물론 프로그램을 처음에 모듈화 하고 구조 잡아가는건 어렵겠죠.)\n 필요 없는 모듈이 있다면, 쉽게 제거할 수 있다. 필요한 모듈이 있다면, 쉽게 추가 할 수 있다. 문제가 있는 부분은, 해당 부분만 테스트 해보면 된다. 프로그램의 덩치가 커질수록, 모듈화가 빛을 발한다. (왜냐하면, 코드가 스파케티처럼 엉켜있지 않기 떄문에.)  서비스 🐋프로그램을 조립하면? 모듈을 조립하면 프로그램이 된다고 했습니다. 그럼 프로그램을 조립하면? 서비스가 되겠죠. 뭐 굵직하게 네이버 검색서비스, 카카오톡 메시징 서비스 등등 모든 서비스가 프로그램을 조립해서 만들었겠죠?\n🐋서비스의 구성? 서비스를 만들기 위해서는 여러가지 프로그램을 사용해야 됩니다. 데이터베이스를 쓰고자 한다면 DB를 돌리는 서버(프로그램)이 있어야 겠죠? 웹페이지를 세상에 공개하려면, 웹 페이지를 serve 하는 서버(프로그램)도 있어야겠죠? 서비스의 규모가 커지면 돌려야하는 프로그램이 엄청 많아질 겁니다. Stackshare라는 사이트에서 Reddit이 어떤 프로그램을 조립한 서비스인지 살펴보세요. 하나의 서비스를 만들기 위해 많은 프로그램을 사용하고 있는 걸 볼 수 있습니다.\n이 모든 프로그램을 내 윈도우 컴퓨터에 깔고, 그걸 어떻게 잘 조립해서 서비스를 제공한다고 생각 해보세요. 물론 이게 불가능 한 건 아닙니다. 문제는, 이렇게 서비스를 만들면 위에서 저희가 살펴봤던 모듈화의 장점을 전혀 누릴 수가 없게 됩니다.\n도커 등장 서론이 너무 길었습니다. 도커가 왜 필요한가? 에 대한 저의 대답은, 가장 간단히 말해서 프로그램 돌리는걸 모듈화 해서, 서비스의 유지, 보수를 쉽게하고 시간낭비를 줄여서, 돈이 많이드는 인적 자원에 대한 낭비를 줄이겠다 라는게 제 생각입니다.\n🐋모듈화 해야하나? 모듈화의 장점은, 프로그램의 덩치가 작을 때는 잘 느껴지지 않아요. 우리가 토이 프로젝트로 뭐 블로그같은걸 만든다거나 할때는 굳이 모듈화니 뭐니 필요없습니다. 그냥 대충만드셔도 되고, 도커도 필요없고 테스트 코드니 뭐니, 남들이랑 협업해서 일을 진행할 일도 없을것이기 때문에, 나만 이해 할 수 있는 선에서 프로그램을 짜도 문제 없다고 생각합니다. 다만, 규모가 큰 프로그램을 다룰 일이 있다면, 작은 규모의 토이 프로젝트에서도 모듈화하는 습관을 가지고 연습하는게 현명한 선택이 될 수도 있을 것 같아요.\n🐋프로그램 모듈화의 장점? 그리고 프로그램 돌리는걸 모듈화 할 경우, 부수적으로 따라오는 이득이 많이 있습니다. 프로그램이 돌다가 갑가지 죽는경우가 발생할 수 있겠죠? 도커로 여러개의 프로그램을 돌리면 됩니다. 프로그램이 죽으면 살아있는놈을 대신 쓰면 되겠죠. 특정 시간대에만 사람이 몰리는 서비스라면? 도커로 해당 프로그램을 트래픽에 따라 동적으로 늘리면 됩니다. 도커는 독립적인 환경에서 실행되고, 도커가 다른도커와 커넥션이 있으려면, 도커 실행시 이를 명시해 주어야 하기 때문에, 프로그램이 스파게티 코드처럼 엉킬 일도 없고, 프로그램마다 의존 관계를 확실히 할 수 있어 유지, 보수도 쉬워집니다. 또 도커는 리눅스뿐만 아니라 윈도우에서도 돌아가기 때문에, 원하는 서비스를 다른 os로 쉽게 이식 할 수도 있습니다.\n"
+},
+{
+	"uri": "/ko/categories/%EB%9E%80/",
+	"title": "란?",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/ko/tags/webpack/",
+	"title": "webpack",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/ko/series/webpack/",
+	"title": "webpack",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/ko/posts/webpack/how_to_webpack_config/",
+	"title": "Webpack 설정파일 들여다 보기",
+	"tags": ["webpack"],
+	"categories": [],
+	"series": ["webpack"],
+	"description": "Webpack을 실제로 사용해보자.",
+	"content": "Webpack, 들어는 봤는데\u0026hellip; 사실 리액트 프로젝트를 진행하면서, Webpack을 만질 기회가 많이 없는게 사실입니다. 보통 Create React App(cra)로 프로젝트를 시작하거나, Next.js, Gatsby,js 등등의 프레임웤을 이용해 프로젝트를 만들게 되죠. 이 경우, 보통 Webpack이 프레임워크 내에 기본적으로 설정되어 있기 때문에, Webpack 설정을 크게 고칠 이유가 별로 없습니다.\n저의 경우 Webpack이라고 하면 그냥 막연하게만 느껴졌어요. 그래도 웹팩은 프로젝트의 핵심 부분이고 적어도 컨셉과 개념정도는 알아야겠기에 간단하게나마 웹팩을 사용해 보았습니다.\n웹팩 설정 파일 파일 출력 부분 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19  const path = require(\u0026#39;path\u0026#39;); module.exports = { entry: { \u0026#39;index\u0026#39;: \u0026#39;./src/index.js\u0026#39; }, output: { filename: \u0026#39;[name].bundle.js\u0026#39;, path: path.resolve(__dirname, \u0026#39;./dist\u0026#39;), publicPath: \u0026#39;\u0026#39; }, mode: \u0026#39;development\u0026#39;, devServer: { contentBase: path.resolve(__dirname, \u0026#39;./dist\u0026#39;), index: \u0026#39;index.html\u0026#39;, port: 9000 }, ... };     entry: single page application의 경우, 하나의 엔트리 지점이 존재하겠죠. 저의 경우는 src 폴더에 있는 index.js 파일이 프로젝트의 소스가 모이는 지점입니다. 이곳에 다른 파일들을 import 하여 프로젝트를 만들어 나가겠죠.\n  output: 웹팩이 모든 소스파일들을 조립하여 하나의 번들 파일을 만들어낼 때, 파일 이름은 뭘로 할지, 어느 경로에 파일을 만들어 낼지 등을 설정합니다. [name]부분은 entry 부분의 파일 이름이 들어가는 자리입니다. __dirname은 현재 프로젝트의 루트 경로를 node 환경에서 기본적으로 제공하는 변수인 듯 합니다. 저의 경우 output으로 만들어 지는 파일은 root경로/dist/index.bundle.js 가 되겠군요.\n  mode: 웹팩이 번들 파일을 만들어 낼 때, mode가 production이면 minify를 진행합니다. 자바스크립트 파일명에 *.min.js라는 파일명 많이 보셨죠? 이런 파일명을 가진 자바스크립트 파일은 불필요한 공백을 없애서 파일 용량을 최소화 한 것이죠. 웹팩은 최적화된 번들 파일을 만들어 주는 역할도 해줍니다.\n  devServer: 웹팩에서 제공하는 devServer를 이용하면, 빌드를 따로 하지 않더라도 개발하면서 실시간으로 바뀌는 내용들을 브라우저에서 확인할 수 있습니다.\n  모듈 설정 부분 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30  module.exports = { ... module: { rules: [ { test: /\\.(png|jpg)$/, use: [ \u0026#39;file-loader\u0026#39; ] }, { test: /\\.scss$/, use: [ \u0026#39;style-loader\u0026#39;, \u0026#39;css-loader\u0026#39;, \u0026#39;sass-loader\u0026#39; ] }, { test: /\\.js$/, exclude: /node_modules/, use: { loader: \u0026#39;babel-loader\u0026#39;, options: { presets: [ \u0026#39;stage-0\u0026#39; ] } } } ] }, ... };     rules 배열 안에 필요한 모듈이 있으면 하나씩 추가해 나가면 됩니다. 공식 홈페이지에 rules 안에 들어갈 내용이 통째로 나와있어서 그냥 복붙하면 될 것 같아요.\n  저의 경우, 파일 로더, 스타일 로더, 바벨 로더를 사용하고 있는데, 위의 entry point로 지정한 index.js 파일에서 다음과 같이 사용할 수 있게 해줍니다.\n1 2 3 4 5 6  import \u0026#34;myScss.scss\u0026#34; import myImage from \u0026#34;./myImage.png\u0026#34; // 또한 babel-loader에 의해 ES6 문법을 사용할 수 있게 된다. const myData = { a: 1, b: 2, c: 3} const { a, b } = myData;     물론 해당 로더들을 package.json 파일에 추가해 주어야 합니다.\n1  yarn add babel-loader ...     플러그인 부분 1 2 3 4 5 6 7 8 9 10 11 12  module.exports = { ... const TerserPlugin = require(\u0026#39;terser-webpack-plugin\u0026#39;); plugins: [ new CleanWebpackPlugin(\u0026#39;dist\u0026#39;), ], optimization: { minimize: true, minimizer: [new TerserPlugin()], }, };     모듈이 소스 코드에 영향을 미친다면, 플러그인은 빌드 과정에 대한 것인듯.\n  CleanWebpackPlugin: 빌드시, 이전에 만들어진 dist 폴더에 남아있는 번들 파일들을 삭제해 줍니다.\n  TerserPlugin: javascript를 minify 시켜준다고 합니다. 예를들어 lodash라는 라이브러리를 import 해서 debounce 라는 함수만을 사용한다고 가정해 보겠습니다. debounce를 제외한 다른 함수들은 사용하지 않으므로, Terser Plugin이 lodash의 다른 함수들을 제외시켜 만들어지는 번들의 용량을 많이 줄일 수 있습니다.\n  결론 Webpack을 어느정도 사용은 할 수 있을것 같습니다. 그러나 최적화 측면에서 그냥 남들이 잘 만들어 놓은 기본 설정을 그냥 가지고 와서 쓰고, 필요한게 따로 있으면 하나씩 추가해주는게 정신건강에 이로울 것 같다는 생각이 듭니다. 옵션이나 부가적으로 설정해 주어야 하는게 많으므로, 이 많은 설정값들을 하나하나 자세히 알려면 시간이 많이 걸리겠죠. 정말 관심이 많지 않고서야 이걸 굳이?\n"
+},
+{
+	"uri": "/ko/posts/webpack/what_is_webpack/",
+	"title": "Webpack이란?",
+	"tags": ["webpack"],
+	"categories": [],
+	"series": ["webpack"],
+	"description": "Webpack이 필요한 이유와 기능 살펴보기.",
+	"content": "Webpack은 왜 필요할까? ☄️말도안되는 거대한 하나의 파일 예전에 한 회사에서 일했을 때, 어떤 자바스크립트 파일을 본 적이 있습니다. 한 6만줄에 육박하는 아주 거대한 파일 이었는데, 이곳에 모든 변수와 함수, 그리고 프로토타입을 정의하고 있었죠. 그 파일 하나 여는데도 오래걸리고 열고 나서도 스크롤을 내리거나 할 때 코드 에디터가 굉장히 버벅였었죠. 버벅임은 둘째 치고, 그 하나의 파일 안에서, 자바스크립트 프로그램이 어떤 구조로 짜여져 있는지 파악하는게 굉장히 어려웠습니다. 저는 다시는 이런 파일을 다루고 싶지 않아요.\n☄️거대한 파일 쪼개기 만드려는 프로그램의 코드를 하나의 파일 안에 모두 담는 것은 안티 패턴인 것 같습니다. 그럼 이에 대한 해결책은, 거대한 하나의 파일을 여러개의 작은 파일로 쪼개는 것이겠죠. 하나의 파일을 여러개의 파일로 쪼개면 여러가지 좋은점이 있습니다.\n일단 프로그램의 전체 구조를 좀 더 쉽게 이해 할 수 있겠죠. 또 하나의 파일은 아무래도 관련 있는 코드들로 묶어놨을 것이기 때문에, 코드를 이해하는 데도 좋겠고, 코드를 관리하고 리팩토링 할 때도 좋겠죠.\n☄️Webpack의 등장 Webpack은 위에서 다룬 문제점을 해결하기 위해 등장했다고 생각합니다. 프로그램을 짤 때는 사람이 이해하기 쉬운 방식으로 짜고, 이렇게 짜여진 코드를 모두 조립하여 실행할 수 있는 하나의 파일을 만드는 것. 사실 이런 개념은 빌드 라는 이름으로 프로그래밍 언어마다 존재하는 개념입니다. 자바스크립트에서 빌드를 해주는 녀석중 하나가 바로 웹팩인 것이죠. Webpack 이외에 자바스크립트의 빌드툴은 여러가지가 있습니다. 그 중 가장 유명한 녀석이 Webpack이고요.\n사실 Webpack은 조각난 파일들을 단순히 조립하는 빌드역할만 하는게 아닙니다. Babel을 로드하여 ES6 문법을 재해석 하기도 하고, scss파일을 로드하여 css파일로 변환한다거나, png, jpg등의 이미지 파일을 파일 시스템 경로에서 어떻게 불러올 지 해석하기도 해야죠. 따라서 Webpack 은 빌드툴이다 라고만 말하는게 좀 부족해 보입니다. 외국에서는 Webpack이 뭐냐? 라는 질문에 모듈 번들러(module bundler)라고 하더군요. 웹팩이 생성해 내는 파일을 번들(bundle) 이라고 하는것 같아요.\nWebpack의 기능 웹팩은 기본적으로 우리가 짠 여러 소스파일을 하나로 합쳐주는 역할을 수행합니다. 파일을 하나로 합치는 과정에서 우리가 생각할 수 있는 필요한 거의 모든 기능은 로더(loader)와 플러그인(plugin)으로 수행할 수 있습니다.\n☄️로더 자바스크립트 프로그램을 짤 때, 파일을 여러개로 분리한다면 로더가 필요합니다. 로더를 설치하고, 설정해주면, 다음과 같은 식으로 사용할 수 있습니다.\n1 2 3  import { myFunc } from \u0026#34;MyModule\u0026#34; import \u0026#34;mySCSS.scss\u0026#34; import myImage from \u0026#34;static/images/myImage\u0026#34;   이렇게 어떤 파일 내에서 필요한 코드를 불러와서 사용할 수 있습니다. 이런식으로 프로그램을 짜다 보면, 결국 모든 파일이 유기적으로 엮이겠죠.\n웹팩에는 다양한 종류의 로더가 있습니다.\n  css, scss등을 로드할 수 있게 해주는 로더(Styling)\n style-loader css-loader less-loader sass-loader    ES6 문법을 해석해주는 로더(Transpiling)\n babel-loader script-loader    jpg, png등의 이미지를 불러오는 로더(Files)\n file-loader raw-loader url-loader    JSON파일을 불러오는 로더(JSON)\n json-loader    그 외에도 다양한 로더가 있습니다. Linting, Testing, Framework 등등의 로더. 공식 홈페이지에서 로더 문서를 확인해보세요.\n  ☄️플러그인 웹팩의 플러그인은 빌드 과정에서 필요한 역할을 수행해 줍니다.\n  MiniCssExtractPlugin: 웹팩이 빌드할 때, 스타일(css) 파일을 따로 분리해서 생성해줍니다.\n  CleanWebpackPlugin: 빌드 할 때, 이전에 빌드했던 파일을 삭제하고 새로 생성된 파일만 남기고 싶을 때 사용합니다.\n  HtmlWebpackPlugin: 웹팩이 빌드 후 만드어낸 번들 파일의 이름이 hash를 포함해야 할 경우 유용하다고 하네요. 파일 이름에 hash를 왜 포함해야 하냐면, 매번 똑같은 이름의 파일을 브라우저가 로드할 경우, 브라우저는 해당 파일이 이전과 똑같다고 판단하고(왜냐하면 이름이 이전과 같으면 같은 파일로 인식) 새로 빌드된 번들파일을 사용하지 않기 때문입니다.\n  그 외에 다양한 플러그인이 있으니, 공식 플러그인 문서를 확인해보세요.\n  "
+},
+{
+	"uri": "/ko/tags/hugo/",
+	"title": "hugo",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/ko/series/hugo/",
+	"title": "hugo",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/ko/posts/hugo/theme_customizing/",
+	"title": "휴고 테마 커스터마이징 하기",
+	"tags": ["hugo"],
+	"categories": [],
+	"series": ["hugo"],
+	"description": "휴고에서 테마 커스터마이징 하기 추천 방법",
+	"content": "layouts 폴더 휴고로 사이트를 만들고 테마를 막 적용 하신 상태라면, 자신의 루트 디렉토리에 있는 layouts라는 폴더는 빈 폴더일 겁니다. 테마의 layouts 폴더에는 여러 파일들이 있을겁니다. 이 폴더에 있는 파일들이 화면에 렌더링됩니다. 테마를 커스터마이징 하려면 내가 어떤 부분을 수정하고 싶은지 알아야 겠죠? 그래서 휴고의 기본 폴더 구조는 알고 있어야 layouts 폴더의 어느 부분을 고쳐야 할 지 찾을 수 있을겁니다. 굵직한 메인 파일만 말씀드리자면,\n layouts/index.html =\u0026gt; 홈 페이지 layouts/_default/baseof.html =\u0026gt; 기본이되는 템플릿 페이지인데 커스터마이징 할 때 건드실 일은 없을것 같아요. layouts/_default/list.html =\u0026gt; 리스트 페이지 layouts/_default/taxonomy.html =\u0026gt; tags, series, categoreis 리스트 페이지 layouts/_default/single.html =\u0026gt; 포스팅 글이 있는 뷰페이지 layouts/partials =\u0026gt; 이 partials 폴더에 있는 파일들을 위에 안급한 파일에 import하고 짜깁기하여 화면이 구성됩니다. 사실 커스터마이징을 위해 이 폴더가 제일 중요합니다.  Overriding이 핵심 위에 언급한 layouts 폴더는 themes/zzo 폴더에도 있고, 루트 폴더에도 있을겁니다. 루트 폴더에 있는 layouts는 아마도 빈 폴더일거구요. 이 루트 폴더의 layouts에 Zzo 테마에 있는 파일 경로와 똑같은 경로로 파일을 만들어 주면, 휴고는 루트폴더에 있는 파일을 바라보게 됩니다. 이것을 휴고에서 lookup order라고 하더군요.\n예를들어보죠. 사이드바에 있는 bio 컴포넌트를 컴포넌트를 커스터마이징 하려면, themes/zzo/partials/sidebar/site-bio.html 파일의 내용을 복사해서 root/partials/sidebar/site-bio.html 파일을 만들어 붙여넣기 하고, 해당 파일을 원하는 대로 수정하면 됩니다.\nOverriding 하는 이유 theme폴더에 있는 파일을 그냥 수정하면 안되냐구요? 물론 됩니다. 근데 이 폴더를 건드시게 되면, 나중에 테마 제작자가 해당 테마의 버그를 수정하거나 새로운 기능을 추가 했을 때, 내 사이트에 적용된 테마를 업데이트 하는게 어려워집니다. 그래서 웬만하면 root/layouts 폴더에 파일을 만들어 오버라이딩 하는게 좋습니다.\n스타일링 커스터마이징의 이유는 스타일을 좀 변경하고 싶기 때문 일 겁니다. 사실 휴고 테마마다 커스터마이징 방식이 다 달라서 어떻게 커스터마이징 해야 할지는 해당 테마의 레포에서 README.md 파일을 읽어보셔야 합니다.\nZzo 테마에서 제공하는 커스터마이징을 간단하게 말씀드릴게요.\n  우선 root/config/_default/params.toml 파일에 있는 설정값들을 변경해서 커스터마이징 할 수 있습니다. 설정 파라미터 이름 자체가 의미를 담고 있어서 대략 뭐하는 설정값인지 짐작이 가실거라 생각합니다.\n  커스텀 css 파일을 넣으려면 README.me의 custom_css 부분을 참고해주세요\n  커스텀 폰트를 사용하려면, root/layouts/head/custom-head.html 파일을 만드시고 그곳에 원하는 구글 폰트를 불러오면 됩니다.\n  "
+},
+{
+	"uri": "/ko/posts/hugo/theme_making_miscellaneous/",
+	"title": "휴고 테마 제작 잡설",
+	"tags": ["hugo"],
+	"categories": [],
+	"series": ["hugo"],
+	"description": "쪼띰 만들면서 느낀점",
+	"content": "🧟제작기간 3개월 가까이 걸렸다. 회사도 다니고 있고, 아무래도 기능적으로 이것 저것 많이 추가하다 보니 시간이 많이 걸린 것 같다. 처음에는 그냥 블로그를 시작하려고 했던건데 블로그 템플릿을 만드느라 블로그를 3개월 뒤에나 시작하다니\u0026hellip; 다른 휴고 테마들 보니까 보통 제작기간이 1~2개월 정도인 것 같다.\n💬휴고 커뮤니티 휴고는 bep이라는 리드개발자 한분이 휴고 프로젝트를 이끌고 있고, 휴고 웹사이트와 테마를 관리하는 분 두분이 계신다. 커뮤니티 사이트에 질문을 올리면 항상 답변이 달리긴 하지만 친절 하지는 않다. 부담없이 막 글쓰고 이야기하고 그런 분위기는 아닌 것 같다. 휴고 사이트에 문제가 있어서 깃헙에 이슈를 올렸는데, 반응이 굉장히 까칠했다. 그리고 이런 큰 규모의 오픈소스를 이용하면서 스폰도 안해주고 커뮤니티에 지원 관련 문의를 \u0026ldquo;많이\u0026rdquo; 올리는건 진짜 눈치보이는 것 같다. 그리고 휴고 테마를 만들어서 돈받고 파는 싸이트 들이 있는데, 휴고로 돈을 벌면서 휴고 스폰을 안해준다면? 이런 사람이 커뮤니티에 지원 글 올리면 몰매맞는을 거 같다.\n🐼중국 중국 분들을 신경 쓰지 않을수가 없다. Zzo 테마를 이용해 주는 사람들 중 70% 정도가 중국분인 것 같다. 왜 중국과 인구가 비슷한 인도 사람들은 잘 안보이는데 유독 중국 분들이 많은 걸까. 아마 중국에 인터넷 보급률이 높은가보다. 덕분에 중국에서 많이 이용하는 코멘트 시스템과 중국어 검색을 지원해야 했다.\n👨‍🔧깃헙 이슈 만약 어떤 깃 레포에 이슈가 굉장히 많다면, 버그나 개선해야 할 사항이 그만큼 많다는 뜻도 되고, 그만큼 많은 사람들이 사용한다는 뜻도 된다. 레포 소유자 입장에서는, 이슈를 해결하기 위해 많은 시간이 든다. 어떤 오픈소스 레포에 가서 이 프로젝트가 잘 관리되고 있는지 아닌지는 보통 이슈 페이지만 보면 알 수 있다.\n사람들은 깃헙에 이슈를 잘 만들지 않는 것 같다. 그냥 느낌상 Zzo 테마를 이용하는 사람들 중, 테마에 문제가 있어 이슈를 올리는 비율은 10~15% 사이인 것 같다. 버그가 있거나 불편해도 그냥 그대로 사용하거나, 사용하지 않거나. 한 번 테마를 적용하고 나면 별로 신경 쓰고 싶지 않은 것 같다.\n"
+},
+{
+	"uri": "/ko/posts/hugo/how_to_use_hugo_theme/",
+	"title": "휴고 테마 적용하는 방법",
+	"tags": ["hugo"],
+	"categories": [],
+	"series": ["hugo"],
+	"description": "윈도우, 맥 로컬 환경에서 휴고 실행하기.",
+	"content": "Zzo 테마 적용 방법 다른 테마 적용하는 방법도 비슷 할 겁니다. 제가 말씀 드리는 대로만 하면 순탄하게 테마를 적용하실 수 있을겁니다.(사실 뭐든 처음에는 삽질이 필요하죠)\n  우선 패키지 매니저를 설치해야 합니다.\n  윈도우에서는 Chocolatey라는 패키지 매니저를 사용하시면 됩니다. 맥에서는 Homebrew입니다.\n  Chocolatey를 설치하려면 Powershell을 Run as Administrator로 실행해야 합니다.\n  다음 코드를 복사하고 Powershell에 붙여넣어 주세요.\n1  Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString(\u0026#39;https://chocolatey.org/install.ps1\u0026#39;))     Chocolatey를 설치 하셨다면 다음 명령어로 Hugo를 설치해주세요.\n 윈도우  1  choco install hugo-extended -confirm    맥  1  brew install hugo     이제 휴고가 잘 설치 되었나 확인해주세요.\n1  hugo version     휴고가 잘 설치 되었다면, 이제 사이트를 만들 차례입니다. 먼저 폴더 하나를 만들고 그 폴더 안에서 다음 명령어를 입력해주세요. 명령어 마지막에 .(점) 하나 찍는거 필수입니다.\n1  hugo new site .     만드신 루트 폴더 안에 여러가지 휴고관련 빈 폴더와 파일이 생성되었을 겁니다. 이제 휴고 테마를 적용해야 겠죠. 테마를 적용하는 방법에는 두가지가 있습니다. 그냥 가장 단순하게, 원하는 theme 레포에 가셔서 파일을 다운로드 하신 후, theme폴더에 풀면 되죠. 아니면 git submodule을 이용하는 방법이 있습니다. git submodule을 사용하면 테마관련 업데이트가 있으면, 업데이트된 버전을 자신의 블로그에 쉽게 적용하실 수 있습니다. git submodule과 관련해서는 이야기가 복잡해지므로, zip파일을 풀어넣는 방법으로 설명드리겠습니다.\n  원하시는 휴고 테마의 레포에 가셔서 해당 레포를 다운로드 해주세요. 저는 Zzo 테마를 사용하겠습니다. 다운로드 한 압축 파일을 themes/zzo 폴더에 풀어주세요.\n  themes/zzo 폴더 안에 exampleSite라는 폴더가 있을겁니다. 그 폴더 안에 있는 config, content, static 이 세개의 폴더를 복사해서 루트 폴더에 붙여넣어 주세요. 기존에 루트 폴더에 있던 config.toml 파일은 필요없으니 지워주세요. 저희가 복사한 config 폴더 안에 config.toml파일이 있고 그걸 설정파일로 사용할겁니다.\n  이제 실행시키면 됩니다.\n1  hugo server -D     "
+},
+{
+	"uri": "/ko/posts/hugo/make_a_blog_with_hugo/",
+	"title": "휴고로 블로그를 만들면 좋은 이유(장, 단점)",
+	"tags": ["hugo"],
+	"categories": [],
+	"series": ["hugo"],
+	"description": "휴고 테마를 만들었습니다. 많이 이용해주세요😁",
+	"content": "휴고? Hugo는 정적 웹페이지 생성기입니다. 그냥 쉽게말해서 웹사이트 만들 때 사용하는건데, 보통 회사 사이트나 블로그 만들 때 많이들 사용합니다. 2019년 12월 11일 현재 깃헙 star 갯수는 4만개를 돌파하여 점점 공룡 오픈소스가 되고 있습니다.\nJekyll? Hexo? Hugo! Hugo의 자매품으로 Jekyll과 Hexo가 있습니다. 이 세쌍둥이?들은 모두 남들이 만들어 놓은 theme으로 쉽게 웹사이트를 만들 수 있습니다. 보통 수백가지의 theme을 지원하고 휴고에는 270여개의 테마가 있습니다. 블로그 테마, 문서 정리용 테마, 회사 테마 등등이 있죠.\n⭐깃헙 스타 수 비교     Jekyll Hexo Hugo     첫 배포 2008년 11월 5일 2012년 10월 10일 2013년 6월 25일   스타 수 39,284개 28,951개 40,037개    가장 후발주자였던 Hugo가 가장 많은 스타 갯수를 보유하고 있습니다. 휴고가 이렇게 많은 관심과 사랑을 받는이유는 뭘까요? 여러가지가 있겠지만, 빌드 속도가 무지 빠르다는게 가장 큰 것 같습니다. 물론 저도 이것 때문에 휴고를 선택했구요.\n글을 작성하고, 배포하면 수분안에 내가 쓴 글을 웹에 올릴 수 있습니다. 지금 이 블로그에 37개 정도의 페이지가 있는데 1분안에 배포가 되는것 같아요. 페이지 수가 많으면 많아질 수록, 다른 자매품들 과의 격차는 기하 급수적으로 벌어질 것으로 생각됩니다.\n🤔휴고의 단점? 제가 휴고로 블로그를 만들려고 테마를 살펴봤었는데, 딱히 마음에 드는게 없었습니다. 처음에 zen테마로 시작해서 블로그를 만들고 커스터마이징을 계속 하다가 소스를 너무 많이 고쳐버렸드랬죠. 이럴바에 그냥 하나 만들자고 해서 Zzo 테마가 탄생하게 되었습니다.\n본론으로 돌아와서, 사용자의 입장에서(제 입장에서) 휴고의 최대 단점은 테마가 막 퀄리티가 엄청 좋고 그러진 않은것 같아요. 왜그럴까 생각해 봤는데, 이게 휴고 테마를 만들다 보니까 자바스크립트를 쓰는데 좀 많이 제한되어 있습니다. 단적으로 말해서, 휴고에서 변수를 정해서 자바스크립트로 불러올 수는 있는데, 자바스크립트에서 만든 변수는 휴고쪽으로 넣을 수가 없습니다. 단방향 커뮤니케이션이죠. 이것 때문에 그런건지는 몰라도, Hexo쪽 테마들과 비교해서 휴고 테마가 부실해 보이는게 사실입니다. (이 단점은 빌드 속도로 커버치고도 남죠)\n위에서 깃헙 스타수 비교했었죠? 사실 각 자매품들에 딸린 테마들의 스타 수까지 계산하면, 순위는 완전히 역전됩니다. 대충 비교해보면\n    Jekyll Hexo Hugo     1위 테마 스타 수 6,378개 14,914개 3,582개   2위 테마 스타 수 3,370개 7,077개 792개    뭔가 느껴지시나요? 깃 스타수가 가장 적었던 Hexo가 테마쪽을 들여다보니, 가장 많은 스타수를 보유하고 있었습니다! 이게 무슨말일까요? 사용자 입장에서는 빌드 타임이고 뭐고 필요없이 그냥 무조건 외관상 보기 좋은 테마들이 많은 Hexo 테마들이 인기가 많았던 걸까요? 아마도 그런것 도 있겠죠.\n🐉중국인들의 위엄? 중국 사람들은 진짜 엄청 많은 것 같아요. Zzo 테마를 이용하는 70% 정도가 중국분들인 것 같습니다. 진짜 중국어 공부해야 시작해야 겠다고 생각할 정도로. 이 이야기를 뜬금포로 왜하느냐?\nJekyll, Hexo, Hugo 레포 가셔서 closed 된 이슈들 한번 봐보세요. Jekyll과 Hugo는 거의 100퍼 영어로 되어있어요. 근데 Hexo는 중국어도 많이 섞여 있습니다. 보니까 Hexo 프로젝트를 만드신 분이 대만분 이시더군요. 그리고 중국분들\u0026hellip; 영어 진짜 못합니다. 그래서 이슈같은거 중국말로도 올릴 수 있는 Hexo를 중국분들이 많이 이용했고, 그에 따라 테마의 깃 스타수가 저렇게 많다는게 저의 뇌피셜입니다.\nHugo를 이용해야 하는 이유 한가지 더 Hugo는 지금도 엄청 활발하게 개발이 진행중입니다. Hugo가 처음 나왔을 때, 세상에서 가장 빠른 웹 페이지 생성기라는 타이틀로 공개 되었기 때문에, 개발을 진행 할 때도 이것을 엄청 신경쓴다고 합니다. 그러니까 버그나 기타 이슈 같은게 해결될 가능성이 크고 성능을 향상 시키는 등, 앞으로의 지원 가능성을 따져봤을 때, Hugo가 좋은 선택이 될 수 있습니다.\n다음은 최근 6개월 간의 커밋한 코드 양입니다.\n   Jekyll Hexo Hugo     1,104++ 694\u0026ndash; 2,579++ 1704\u0026ndash; 83,090++ 75,789\u0026ndash;    압도적인 코드 변경 숫자의 차이가 보이십니까. Jekyll이나 Hexo는 거의 유지보수하는 정도의 수준인데, Hugo는 지금도 뭔가 많이 변경하네요. 2013년에 시작한 프로젝트인 Hugo가 아직도 안정화가 되지 않아서 저렇게 많이 변경하는 걸까요?\n그건 아닙니다. 휴고에서는 성능적인 면에 신경을 많이 쓰기 때문에 그런겁니다. 예를들자면, Markdown을 렌더링하는 라이브러리를 python의 blackfriday에서 go의 goldmark로 변경하거나, 코드 하이라이트 해주는 라이브러리를 pygments에서 chroma로 변경하거나 하죠. 이런 굵직 굵직한 개발이 지금도 활발히 진행된다는 말씀을 드리고 싶습니다.\n"
+},
+{
+	"uri": "/ko/about/",
+	"title": "About",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "저와 이 블로그에 대해...",
+	"content": "  누구? 웹 개발자입니다.\n  하는 일? 회사에서 React.js로 웹페이지 만들고 있습니다.\n  관심 분야? 오픈소스. 내가 만든 프로그램으로 관심받기.\n  프로그래머로서의 목표?\n    유용한 정보를 제공할 수 있는 웹사이트 만들기.\n  많은 사람들이 이용하는 라이브러리 만들고 유지하면서 스폰받기.\n  블로그 만든 이유?    우선, 나중에 참조할 수 있는 코드나 생각들을 정리해 두어야 겠다고 생각했습니다.\n  둘째, 글을 쓰다보면 제 생각이 잘 정리되는 것 같아요.\n  셋째, 제가 써놓은 글이 남들에게 유용 할 수도 있다고 생각해요.\n  넷쨰, 나를 어필하는 수단.\n  다섯, 소통의 수단?\n   왜 쪼식이임? 소싯적 게임 아이디 입니다.\n  롤 최고티어는? 시즌9 플레4.\n  "
+},
+{
+	"uri": "/ko/gallery/mine/",
+	"title": "Fiverr",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "fiverr에서 주문 제작한 그림 모음",
+	"content": ""
+},
+{
+	"uri": "/ko/gallery/",
+	"title": "갤러리",
+	"tags": ["index"],
+	"categories": [],
+	"series": [],
+	"description": "Gallery",
+	"content": ""
+},
+{
+	"uri": "/ko/archive/",
+	"title": "Archive",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "Archive Page",
+	"content": ""
+},
+{
+	"uri": "/ko/gallery/photo/",
+	"title": "Photo",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "포토 갤러리",
+	"content": ""
+},
+{
+	"uri": "/ko/gallery/cartoon/",
+	"title": "Cartoon",
+	"tags": [],
+	"categories": [],
+	"series": [],
+	"description": "cartoon gallery",
+	"content": ""
+}]

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>LedRiod</title>
+    <link>/ko/</link>
+    <description>Recent content on LedRiod</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ko</language>
+    <managingEditor>ledriod@gmail.com (Dmytro Kravets)</managingEditor>
+    <webMaster>ledriod@gmail.com (Dmytro Kravets)</webMaster>
+    <copyright>&amp;copy;{year}, ZZOSSIG All Rights Reserved</copyright>
+    <lastBuildDate>Tue, 24 Dec 2019 10:27:56 +0900</lastBuildDate>
+    
+        <atom:link href="/ko/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+      
+      <item>
+        <title>Refresh token은 필요한가?</title>
+        <link>/ko/posts/javascript/what_is_the_point_of_refresh_token/</link>
+        <pubDate>Tue, 24 Dec 2019 10:27:56 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/posts/javascript/what_is_the_point_of_refresh_token/</guid>
+        <description>로그인 구현 뭘로? 사실 Hugo로 블로그를 만들 기 직전에 Gatsby로 GraphQL도 공부할 겸 블로그를 만들었었다. 코멘트 시스템도 만들고, Admin 페이지까</description>
+      </item>
+      
+      <item>
+        <title>깊은 복사 vs 얕은 복사 in javascript</title>
+        <link>/ko/posts/javascript/shallow_copy_vs_deep_copy/</link>
+        <pubDate>Tue, 24 Dec 2019 09:54:43 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/posts/javascript/shallow_copy_vs_deep_copy/</guid>
+        <description>Intro 기본적으로 자바스크립트에서 깊은 복사, 얕은 복사를 논할 때는 object나 array 같은 reference type을 다룬다는 전제를 깔고 들어간다. primitive type에는 string, boolean, number 등이</description>
+      </item>
+      
+      <item>
+        <title>Call by value 와 Call by reference</title>
+        <link>/ko/posts/javascript/call_by_value_call_by_reference/</link>
+        <pubDate>Mon, 23 Dec 2019 12:13:42 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/posts/javascript/call_by_value_call_by_reference/</guid>
+        <description>이야기는 메모리로부터&amp;hellip; 다음과 같이 자바스크립트에서 변수를 생성하면, 이 변수는 컴퓨터의 어디에 저장될까요? 1 var a = 1; 바로 메모리에 저장되</description>
+      </item>
+      
+      <item>
+        <title>Javascript strict mode에 대해</title>
+        <link>/ko/posts/javascript/js_strict_mode/</link>
+        <pubDate>Mon, 23 Dec 2019 12:13:19 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/posts/javascript/js_strict_mode/</guid>
+        <description>참고: https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Strict_mode Javascript strict mode 사용하기 Javascript의 strict mode를 사용하려면 자바스크립트 파일 첫줄, 혹은 사용하고 싶은 위치에 &#39;use strict&#39;;라는 stri</description>
+      </item>
+      
+      <item>
+        <title>모두가 알아야 할 숫자</title>
+        <link>/ko/notes/numbers_everyone_should_know/</link>
+        <pubDate>Mon, 23 Dec 2019 09:17:04 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/notes/numbers_everyone_should_know/</guid>
+        <description>출처: http://brenocon.com/dean_perf.html action ns ms L1 cache reference 0.5 ns Branch mispredict 5 ns L2 cache reference 7 ns Mutex lock/unlock 100 ns Main memory reference 100 ns Compress 1K bytes with Zippy 10,000 ns 0.1 ms Send 1K bytes over 1 Gbps network 10,000 ns 0.1 ms Read 1 MB sequentially from memory 250,000 ns 0.25 ms Round trip within same datacenter 500,000 ns 0.5 ms Disk</description>
+      </item>
+      
+      <item>
+        <title>Serialization 개념을 알아보자</title>
+        <link>/ko/posts/etc/serialize/</link>
+        <pubDate>Fri, 20 Dec 2019 17:24:00 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/posts/etc/serialize/</guid>
+        <description>Serialization(직렬화) 비유 프로그래밍 세계에서 쓰이는 직렬화, 역직렬화 라는 단어와 뜻 완전히 같지는 않지만, 의미가 일맥상통하는 단어가 여럿</description>
+      </item>
+      
+      <item>
+        <title>Docker란?</title>
+        <link>/ko/posts/docker/what_is_docker/</link>
+        <pubDate>Fri, 20 Dec 2019 14:56:31 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/posts/docker/what_is_docker/</guid>
+        <description>Docker를 이야기 하기 전에 🤔좋은 프로그램이란 뭘까? 여러분은 좋은 프로그램이란 뭐라고 생각하시나요? 가장 기본적으로, 해당 프로그램이 목적에 맞는 역할</description>
+      </item>
+      
+      <item>
+        <title>Webpack 설정파일 들여다 보기</title>
+        <link>/ko/posts/webpack/how_to_webpack_config/</link>
+        <pubDate>Thu, 19 Dec 2019 11:51:31 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/posts/webpack/how_to_webpack_config/</guid>
+        <description>Webpack, 들어는 봤는데&amp;hellip; 사실 리액트 프로젝트를 진행하면서, Webpack을 만질 기회가 많이 없는게 사실입니다. 보통 Create React App(cra)로 프로</description>
+      </item>
+      
+      <item>
+        <title>Webpack이란?</title>
+        <link>/ko/posts/webpack/what_is_webpack/</link>
+        <pubDate>Thu, 19 Dec 2019 09:23:51 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/posts/webpack/what_is_webpack/</guid>
+        <description>Webpack은 왜 필요할까? ☄️말도안되는 거대한 하나의 파일 예전에 한 회사에서 일했을 때, 어떤 자바스크립트 파일을 본 적이 있습니다. 한 6만줄에 육박하는</description>
+      </item>
+      
+      <item>
+        <title>휴고 테마 커스터마이징 하기</title>
+        <link>/ko/posts/hugo/theme_customizing/</link>
+        <pubDate>Fri, 13 Dec 2019 09:24:21 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/posts/hugo/theme_customizing/</guid>
+        <description>layouts 폴더 휴고로 사이트를 만들고 테마를 막 적용 하신 상태라면, 자신의 루트 디렉토리에 있는 layouts라는 폴더는 빈 폴더일 겁니다. 테마의 layouts 폴더에는 여러 파일</description>
+      </item>
+      
+      <item>
+        <title>휴고 테마 제작 잡설</title>
+        <link>/ko/posts/hugo/theme_making_miscellaneous/</link>
+        <pubDate>Thu, 12 Dec 2019 10:18:07 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/posts/hugo/theme_making_miscellaneous/</guid>
+        <description>🧟제작기간 3개월 가까이 걸렸다. 회사도 다니고 있고, 아무래도 기능적으로 이것 저것 많이 추가하다 보니 시간이 많이 걸린 것 같다. 처음에는 그냥 블로그를 시작하려</description>
+      </item>
+      
+      <item>
+        <title>휴고 테마 적용하는 방법</title>
+        <link>/ko/posts/hugo/how_to_use_hugo_theme/</link>
+        <pubDate>Thu, 12 Dec 2019 09:16:12 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/posts/hugo/how_to_use_hugo_theme/</guid>
+        <description>Zzo 테마 적용 방법 다른 테마 적용하는 방법도 비슷 할 겁니다. 제가 말씀 드리는 대로만 하면 순탄하게 테마를 적용하실 수 있을겁니다.(사실 뭐든 처음에는 삽질이 필요하</description>
+      </item>
+      
+      <item>
+        <title>휴고로 블로그를 만들면 좋은 이유(장, 단점)</title>
+        <link>/ko/posts/hugo/make_a_blog_with_hugo/</link>
+        <pubDate>Wed, 11 Dec 2019 12:13:55 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/posts/hugo/make_a_blog_with_hugo/</guid>
+        <description>휴고? Hugo는 정적 웹페이지 생성기입니다. 그냥 쉽게말해서 웹사이트 만들 때 사용하는건데, 보통 회사 사이트나 블로그 만들 때 많이들 사용합니다. 2019년</description>
+      </item>
+      
+      <item>
+        <title>About</title>
+        <link>/ko/about/</link>
+        <pubDate>Sun, 08 Dec 2019 00:00:38 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/about/</guid>
+        <description>누구? 웹 개발자입니다. 하는 일? 회사에서 React.js로 웹페이지 만들고 있습니다. 관심 분야? 오픈소스. 내가 만든 프로그램으로 관심받기. 프로그래머</description>
+      </item>
+      
+      <item>
+        <title>Fiverr</title>
+        <link>/ko/gallery/mine/</link>
+        <pubDate>Sun, 08 Dec 2019 00:00:28 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/gallery/mine/</guid>
+        <description></description>
+      </item>
+      
+      <item>
+        <title>Photo</title>
+        <link>/ko/gallery/photo/</link>
+        <pubDate>Fri, 12 Oct 2018 10:20:16 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/gallery/photo/</guid>
+        <description></description>
+      </item>
+      
+      <item>
+        <title>Cartoon</title>
+        <link>/ko/gallery/cartoon/</link>
+        <pubDate>Thu, 11 Oct 2018 10:20:16 +0900</pubDate>
+        <author>ledriod@gmail.com (Dmytro Kravets)</author>
+        <guid>/ko/gallery/cartoon/</guid>
+        <description></description>
+      </item>
+      
+    
+  </channel>
+</rss>
